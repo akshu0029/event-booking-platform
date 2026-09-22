@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .booking-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .status { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; color: white; }
+        .CONFIRMED { background: #4CAF50; }
+        .HELD { background: #ff9800; }
+        .CANCELLED, .EXPIRED { background: #d9534f; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>My Bookings</h1>
+        <a th:href="@{/web/events}">&larr; Back to Events</a>
+    </div>
+
+    <div th:if="${bookings.isEmpty()}">
+        <p>You haven't booked any tickets yet.</p>
+    </div>
+
+	<div class="booking-card" th:each="booking : ${bookings}">
+	    <h3 th:text="${booking.eventTitle}">Event Title</h3>
+	    <p>
+	        Seats: <span th:text="${booking.numberOfSeats}">0</span> |
+	        Total: ₹<span th:text="${booking.totalAmount}">0</span> |
+	        <span class="status" th:classappend="${booking.status}" th:text="${booking.status}">STATUS</span>
+	    </p>
+	    <p style="color:#666; font-size:13px;">Booked on <span th:text="${booking.createdAt}"></span></p>
+
+	    <form th:if="${booking.status.name() == 'HELD'}" th:action="@{/web/bookings/{id}/confirm(id=${booking.id})}" method="post">
+	        <button type="submit" style="padding:6px 14px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer;">Confirm Payment</button>
+	    </form>
+	</div>
+</body>
+</html>

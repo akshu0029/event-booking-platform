@@ -1,0 +1,64 @@
+services:
+  app:
+    build: .
+    container_name: event-booking-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/eventbooking
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: eventbooking_logs
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      JWT_SECRET: this-is-a-very-long-secret-key-for-jwt-signing-change-in-production-min-32-chars
+      JWT_EXPIRATION_MS: 86400000
+      SEAT_HOLD_TTL_SECONDS: 300
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+    networks:
+      - event-booking-network
+
+  postgres:
+    image: postgres:17
+    container_name: event-booking-postgres
+    environment:
+      POSTGRES_DB: eventbooking
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - event-booking-network
+
+  mongodb:
+    image: mongo:8
+    container_name: event-booking-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - event-booking-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: event-booking-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - event-booking-network
+
+volumes:
+  postgres-data:
+  mongo-data:
+
+networks:
+  event-booking-network:
+    driver: bridge

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Upcoming Events</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .event-card { background: white; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .event-card h3 { margin-top: 0; color: #333; }
+        .event-meta { color: #666; font-size: 14px; }
+        .btn { display: inline-block; padding: 8px 16px; background: #4CAF50; color: white; text-decoration: none; border-radius: 4px; margin-top: 10px; }
+        .btn:hover { background: #45a049; }
+        .logout-btn { color: #d9534f; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Upcoming Events</h1>
+        <div>
+            <a th:href="@{/web/my-bookings}">My Bookings</a> |
+            <a class="logout-btn" th:href="@{/web/logout}">Logout</a>
+        </div>
+    </div>
+
+    <div th:if="${events.isEmpty()}">
+        <p>No upcoming events found.</p>
+    </div>
+
+    <div class="event-card" th:each="event : ${events}">
+        <h3 th:text="${event.title}">Event Title</h3>
+        <p th:text="${event.description}">Description</p>
+        <p class="event-meta">
+            📍 <span th:text="${event.venue}">Venue</span> |
+            🗓️ <span th:text="${event.eventDateTime}">Date</span> |
+            💺 <span th:text="${event.availableSeats}">0</span> / <span th:text="${event.totalSeats}">0</span> seats left |
+            💰 ₹<span th:text="${event.ticketPrice}">0</span>
+        </p>
+        <a class="btn" th:href="@{/web/events/{id}(id=${event.id})}">View & Book</a>
+    </div>
+</body>
+</html>

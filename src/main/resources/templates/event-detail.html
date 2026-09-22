@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${event.title}">Event Detail</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 20px; }
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 500px; }
+        .event-meta { color: #666; margin: 15px 0; }
+        input { width: 100px; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .back-link { display: inline-block; margin-bottom: 15px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <a class="back-link" th:href="@{/web/events}">&larr; Back to Events</a>
+
+    <div class="card">
+        <h2 th:text="${event.title}">Title</h2>
+        <p th:text="${event.description}">Description</p>
+        <p class="event-meta">
+            📍 <span th:text="${event.venue}">Venue</span><br>
+            🗓️ <span th:text="${event.eventDateTime}">Date</span><br>
+            💺 <span th:text="${event.availableSeats}">0</span> seats left<br>
+            💰 ₹<span th:text="${event.ticketPrice}">0</span> per ticket<br>
+            👤 Hosted by <span th:text="${event.organizerName}">Organizer</span>
+        </p>
+
+        <p class="error" th:if="${error}" th:text="${error}"></p>
+        <p class="success" th:if="${success}" th:text="${success}"></p>
+
+        <form th:action="@{/web/events/{id}/book(id=${event.id})}" method="post">
+            <label>Number of seats:</label><br>
+            <input type="number" name="numberOfSeats" min="1" required>
+            <br>
+            <button type="submit">Book Now</button>
+        </form>
+    </div>
+</body>
+</html>
